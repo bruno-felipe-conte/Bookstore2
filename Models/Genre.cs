@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
+
 namespace Bookstore2.Models
 {
     public class Genre
@@ -7,6 +9,7 @@ namespace Bookstore2.Models
         public int Id { get; set; }
 
         [Display(Name = "Nome")]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public string Name { get; set; }
 
         //public ICollection<Book> Books { get; set; } = new List<Book>();
@@ -22,6 +25,11 @@ namespace Bookstore2.Models
 
         }
 
+
+
+
+
+        
 
 
     }
