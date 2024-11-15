@@ -1,7 +1,8 @@
-using Bookstore2.Data;
+using Bookstoret2.Data;
+using Bookstoret2.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Bookstore2
+namespace Bookstoret2
 {
     public class Program
     {
@@ -12,22 +13,25 @@ namespace Bookstore2
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddDbContext<BookstoreContext>(options =>
-            {
-                options.UseMySql(
-                    builder
-                        .Configuration
-                        .GetConnectionString("BookstoreContext"),
-                    ServerVersion
-                        .AutoDetect(
-                            builder
-                                .Configuration
-                                .GetConnectionString("BookstoreContext")
-                        )
-                );
-            });
+            builder.Services.AddScoped<GenreService>();
 
-            var app = builder.Build();
+			builder.Services.AddDbContext<BookstoreContext>(options =>
+			{
+				options.UseMySql(
+					builder
+						.Configuration
+						.GetConnectionString("BookstoreContext"),
+					ServerVersion
+						.AutoDetect(
+							builder
+								.Configuration
+								.GetConnectionString("BookstoreContext")
+						)
+				);
+			});
+
+
+			var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
