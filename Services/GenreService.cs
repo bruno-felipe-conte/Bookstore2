@@ -2,6 +2,7 @@
 using Bookstoret2.Models;
 using Bookstoret2.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace Bookstoret2.Services
 {
@@ -14,10 +15,12 @@ namespace Bookstoret2.Services
 			_context = context;
 		}
 
+
 		public async Task<List<Genre>> FindAllAsync()
 		{
 			return await _context.Genres.ToListAsync();
 		}
+
 		
 		public async Task InsertAsync(Genre genre)
 		{
@@ -29,6 +32,7 @@ namespace Bookstoret2.Services
 		{
 			return await _context.Genres.FindAsync(id);
 		}
+
 
 		public async Task RemoveAsync(int id)
 		{
@@ -43,5 +47,27 @@ namespace Bookstoret2.Services
 				throw new IntegrityException(ex.Message);
 			}
 		}
-	}	
+        // POST: Genres/Edit/x
+        public async Task UpdateAsync(Genre genre)
+        {
+            // Confere se tem alguém com esse Id
+            bool hasAny = await _context.Genres.AnyAsync(x => x.Id == genre.Id);
+            // Se não tiver, lança exceção de NotFound.
+            if (!hasAny)
+            {
+                throw new NotFoundException("Id não encontrado");
+            }
+            // Tenta atualizar
+            try
+            {
+                _context.Update(genre);
+                await _context.SaveChangesAsync();
+            }
+            // Se não der, captura a exceção lançada
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw new DbConcurrencyException(ex.Message);
+            }
+        }
+    }	
 }

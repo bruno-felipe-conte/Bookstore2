@@ -89,6 +89,32 @@ namespace Bookstoret2.Controllers
             return View(obj);
         }
 
+        // POST Genres/Edit/x
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Genre genre) 
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            if (id != genre.Id)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id's não condizentes" });
+            }
+
+            try
+            {
+                await _service.UpdateAsync(genre);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (ApplicationException ex)
+            {
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
+            }
+        }
+		
         public IActionResult Error(string message)
 		{
 			var viewModel = new ErrorViewModel
